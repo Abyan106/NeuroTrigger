@@ -454,6 +454,98 @@ struct BulletStack
 };
 
 // ========================================
+// antrian musuhnya
+// ========================================
+
+struct EnemyQueue
+{
+    string enemy[10];
+
+    int front;
+    int rear;
+
+    void init()
+    {
+        front = 0;
+        rear = -1;
+    }
+
+    void enqueue(string name)
+    {
+        rear++;
+        enemy[rear] = name;
+    }
+
+    string dequeue()
+    {
+        string musuh = enemy[front];
+        front++;
+
+        return musuh;
+    }
+
+    bool isEmpty()
+    {
+        return front > rear;
+    }
+};
+
+// ========================================
+// story dan bracket musuhnya
+// ========================================
+
+struct EnemyTree
+{
+    string enemyName;
+
+    EnemyTree *left;
+    EnemyTree *right;
+};
+
+EnemyTree *createEnemyNode(string name)
+{
+    EnemyTree *node = new EnemyTree;
+
+    node->enemyName = name;
+    node->left = NULL;
+    node->right = NULL;
+
+    return node;
+}
+
+EnemyTree* buildEnemyTree()
+{
+    // LEVEL 0
+    EnemyTree* root = createEnemyNode("THE NEWBIE");
+
+    // LEVEL 1
+    root->left = createEnemyNode("ELITE FIGHTER");
+    root->right = createEnemyNode("PRO PLAYER");
+
+    // LEVEL 2
+    root->left->left = createEnemyNode("THE DARK KNIGHT");
+    root->left->right = createEnemyNode("CELESTIAL SAINT");
+
+    root->right->left = createEnemyNode("CYBER STRIKER");
+    root->right->right = createEnemyNode("SHADOW ASSASSIN");
+
+    // LEVEL 3
+    root->left->left->left = createEnemyNode("DRAGON EMPEROR");
+    root->left->left->right = createEnemyNode("KING OF THE ABYSS");
+
+    root->left->right->left = createEnemyNode("DIVINE ARCHANGEL");
+    root->left->right->right = createEnemyNode("SERAPHIM JUDGE");
+
+    root->right->left->left = createEnemyNode("OMEGA ASCENDANT");
+    root->right->left->right = createEnemyNode("SINGULARITY PRIME");
+
+    root->right->right->left = createEnemyNode("PARADOX ENTITY");
+    root->right->right->right = createEnemyNode("VOID EXECUTIONER");
+
+    return root;
+}
+
+// ========================================
 // player setak
 // ========================================
 
