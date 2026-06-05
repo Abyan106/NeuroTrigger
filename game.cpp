@@ -1434,14 +1434,7 @@ void tampilkanStatus(Player* p)
     if (p->reflectionField)
     {
         setColor(11);
-        if (p->reflectionSustain)
-        {
-            cout << "[REFLECTION//SUSTAIN] ";
-        }
-        else
-        {
-            cout << "[REFLECTION] ";
-        }
+        cout << "[REFLECTION] ";
         adaStatus = true;
     }
 
@@ -2832,7 +2825,7 @@ bool useItemEffect(string itemName, Player *user, Player *target, BulletStack &b
         cout << "\nQUANTUM COIN BERPUTAR...\n";
         setColor(7);
 
-        Sleep(1500);
+        Sleep(2000);
 
         if (fate == 0)
             {
@@ -2877,8 +2870,7 @@ bool useItemEffect(string itemName, Player *user, Player *target, BulletStack &b
                 setColor(7);
 
                 if (!isDealer && user->hp <= 0)
-                {   
-                    Sleep(1200);
+                {
                     showGameOver(*user);
                     exit(0);
                 }
@@ -3202,7 +3194,6 @@ int main()
     player.stabilizer = false;
     player.supercharged = false;
     player.extraTurn = false;
-    player.blankTurn = false;
     player.dominatrixSequence = false;
     player.reflectionField = false;
     player.hyperbarrel = false;
@@ -3247,7 +3238,6 @@ int main()
         dealer.stabilizer = false;
         dealer.supercharged = false;
         dealer.extraTurn = false;
-        dealer.blankTurn = false;
         dealer.dominatrixSequence = false;
         dealer.reflectionField = false;
         dealer.kenaDamage = false;
@@ -3287,7 +3277,6 @@ int main()
         player.hyperbarrel = false;
 
         player.extraTurn = false;
-        player.blankTurn = false;
 
         player.dominatrixSequence = false;
         player.dominatrixMode = 0;
@@ -3307,7 +3296,6 @@ int main()
         dealer.hyperbarrel = false;
 
         dealer.extraTurn = false;
-        dealer.blankTurn = false;
 
         dealer.dominatrixSequence = false;
         dealer.dominatrixMode = 0;
@@ -3439,7 +3427,7 @@ int main()
                 break;
             }
         }
-        
+
         cout << endl;
         system("pause");
     }
@@ -3462,7 +3450,7 @@ int main()
         {
             break;
         }
-
+        
         tampilkanUI(pilihan, &player, &dealer, bullets);
 
         char input = _getch();
@@ -3565,8 +3553,6 @@ int main()
                             << player.name
                             << " TIDAK BISA MENEMBAK KARENA TRIGGER TERKUNCI!\n";
                     }
-
-                    // cek Overdrive
 
                     if (player.extraTurn)
                     {
@@ -3794,91 +3780,11 @@ int main()
             }
 
             // ========================================
-            // EXTRA TURN CHECK
+            // OVERDRIVE CHECK
             // ========================================
 
             if (playerSudahMenembak)
-            {   
-                // peluru kosong
-
-                if (player.blankTurn)
-                {
-                    if (!dealer.alive || !player.alive)
-                    {
-                        break;
-                    }
-
-                    player.blankTurn = false;
-                    playerSudahMenembak = false;
-
-                    if (bullets.isEmpty())
-                    {   
-                        playerSudahMenembak = true;
-
-                        system("cls");
-
-                        setColor(14);
-
-                        cout << "\n====================================\n";
-                        cout << "           CHAMBER KOSONG\n";
-                        cout << "====================================\n\n";
-
-                        setColor(7);
-
-                        cout << "PELURU AKAN DIISI KEMBALI...\n";
-
-                        Sleep(1500);
-
-                        generateBullet(bullets);
-
-                        // reward item ronde baru
-
-                        string itemPlayer = getNewItem();
-                        string itemEnemy = getNewItem();
-
-                        player.chaosState = false;
-                        dealer.chaosState = false;
-
-                        player.inventory.addItem(itemPlayer);
-                        dealer.inventory.addItem(itemEnemy);
-
-                        cout << "\n" << player.name
-                            << " mendapatkan item: "
-                            << itemPlayer;
-
-                        // label SPECIAL
-
-                        for (int i = 0; i < 20; i++)
-                        {
-                            if (itemList[i].itemName == itemPlayer)
-                            {
-                                if (itemList[i].rare)
-                                {
-                                    setColor(13);
-                                    cout << " [SPECIAL]";
-                                    setColor(7);
-                                }
-                                break;
-                            }
-                        }
-
-                        cout << endl;
-
-                        system("pause");
-                    }
-
-                    else
-                    {
-                        cout << "\nBLANK SHOT!\n";
-                        cout << player.name
-                            << " MEMPERTAHANKAN GILIRANNYA!\n";
-
-                        system("pause");
-
-                        continue;
-                    }
-                }
-                
+            {
                 if (player.extraTurn)
                 {
                     if (!dealer.alive || !player.alive)
@@ -3901,62 +3807,6 @@ int main()
                     }
 
                     continue;
-                }
-
-                if (bullets.isEmpty())
-                {   
-                    playerSudahMenembak = true;
-
-                    system("cls");
-
-                    setColor(14);
-
-                    cout << "\n====================================\n";
-                    cout << "           CHAMBER KOSONG\n";
-                    cout << "====================================\n\n";
-
-                    setColor(7);
-
-                    cout << "PELURU AKAN DIISI KEMBALI...\n";
-
-                    Sleep(1500);
-
-                    generateBullet(bullets);
-
-                    // reward item ronde baru
-
-                    string itemPlayer = getNewItem();
-                    string itemEnemy = getNewItem();
-
-                    player.chaosState = false;
-                    dealer.chaosState = false;
-
-                    player.inventory.addItem(itemPlayer);
-                    dealer.inventory.addItem(itemEnemy);
-
-                    cout << "\n" << player.name
-                        << " mendapatkan item: "
-                        << itemPlayer;
-
-                    // label SPECIAL
-
-                    for (int i = 0; i < 20; i++)
-                    {
-                        if (itemList[i].itemName == itemPlayer)
-                        {
-                            if (itemList[i].rare)
-                            {
-                                setColor(13);
-                                cout << " [SPECIAL]";
-                                setColor(7);
-                            }
-                            break;
-                        }
-                    }
-
-                    cout << endl;
-
-                    system("pause");
                 }
 
                 break;
@@ -5265,34 +5115,6 @@ int main()
 
                         if (musuhSudahNembak) {
 
-                            // peluru kosong
-
-                            if (dealer.blankTurn)
-                            {   
-                                Sleep(1000);
-
-                                if (!dealer.alive || !player.alive)
-                                {
-                                    break;
-                                }
-
-                                dealer.blankTurn = false;
-                                musuhSudahNembak = false;
-
-                                if (bullets.isEmpty())
-                                {   
-                                    break;
-                                }
-
-                                cout << "\nBLANK SHOT!\n";
-                                cout << dealer.name
-                                    << " MEMPERTAHANKAN GILIRANNYA!\n";
-
-                                Sleep(1200);
-
-                                continue;
-                            }
-
                             // musuh punya overdrive
 
                             if (dealer.extraTurn)
@@ -5301,7 +5123,6 @@ int main()
                                 {
                                     break;
                                 }
-
                                 musuhSudahNembak = false;   
                                 dealer.extraTurn = false;
 
