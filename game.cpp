@@ -575,6 +575,7 @@ struct Player
     bool supercharged;
     bool stabilizer;
     bool extraTurn;
+    bool blankTurn;
     int dominatrixSequence; 
     bool reflectionField;
     int dominatrixMode; 
@@ -969,7 +970,79 @@ bool shoot(Player *shooter, Player *target, BulletStack &stack, bool &doubleDama
                     }
 
                     else
-                    {   
+                    {
+                        // ========================================
+                        // REFLECTION SUSTAIN + DAMAGE BESAR
+                        // ========================================
+
+                        if (target->reflectionSustain && damage >= 2)
+                        {
+                            target->reflectionField = false;
+                            target->reflectionSustain = false;
+
+                            setColor(4);
+
+                            cout << "\nREFLECTION FIELD HANCUR!\n";
+                            cout << "DAMAGE TERLALU BESAR!\n";
+
+                            setColor(7);
+
+                            // hanya pantulkan 1 damage
+
+                            shooter->hp -= 1;
+                            shooter->kenaDamage = true;
+
+                            cout << shooter->name
+                                << " TERKENA 1 DAMAGE BALIK!\n";
+
+                            // target menerima 1 damage
+
+                            if (target->nanoShield)
+                            {
+                                target->nanoShield = false;
+
+                                setColor(11);
+
+                                cout << "\nNANOSHIELD MENAHAN 1 DAMAGE!\n";
+
+                                setColor(7);
+                            }
+                            else
+                            {
+                                target->hp -= 1;
+                                target->kenaDamage = true;
+
+                                cout << target->name
+                                    << " TERKENA 1 DAMAGE!\n";
+                            }
+
+                            // cek mati shooter
+
+                            if (shooter->hp <= 0)
+                            {
+                                shooter->alive = false;
+
+                                cout << shooter->name
+                                    << " MATI!\n";
+                            }
+
+                            // cek mati target
+
+                            if (target->hp <= 0)
+                            {
+                                target->alive = false;
+
+                                cout << target->name
+                                    << " MATI!\n";
+                            }
+
+                            return true;
+                        }
+
+                        // ========================================
+                        // REFLECTION NORMAL
+                        // ========================================
+
                         if (target->nanoShield)
                         {
                             target->nanoShield = false;
@@ -980,10 +1053,8 @@ bool shoot(Player *shooter, Player *target, BulletStack &stack, bool &doubleDama
 
                             setColor(7);
 
-                            // kurangi damage sebesar 1
                             damage -= 1;
 
-                            // damage habis total
                             if (damage <= 0)
                             {
                                 cout << target->name
@@ -997,124 +1068,58 @@ bool shoot(Player *shooter, Player *target, BulletStack &stack, bool &doubleDama
                         }
                         else
                         {
-                        cout << "\nREFLECTION FIELD MEMANTULKAN PELURU!\n";
+                            cout << "\nREFLECTION FIELD MEMANTULKAN PELURU!\n";
 
-                        shooter->hp -= damage;
+                            shooter->hp -= damage;
+                            shooter->kenaDamage = true;
 
-                        shooter->kenaDamage = true;
-
-                        cout << shooter->name
-                            << " TERKENA "
-                            << damage
-                            << " DAMAGE BALIK!\n";
+                            cout << shooter->name
+                                << " TERKENA "
+                                << damage
+                                << " DAMAGE BALIK!\n";
                         }
 
+                        // ========================================
                         // SUSTAIN SYSTEM
+                        // ========================================
 
-                        // belum pernah sustain
                         if (!target->reflectionSustain)
                         {
                             int sustain = rand() % 100;
 
-                            // 30% survive
                             if (sustain < 30)
                             {
                                 target->reflectionSustain = true;
 
                                 setColor(11);
+
                                 cout << "\nREFLECTION FIELD BERTAHAN!\n";
                                 cout << "FIELD MASIH BISA MENAHAN 1 DAMAGE LAGI!\n";
+
                                 setColor(7);
                             }
-
-                            // gagal sustain
                             else
                             {
                                 target->reflectionField = false;
 
                                 setColor(4);
+
                                 cout << "\nREFLECTION FIELD HANCUR!\n";
+
                                 setColor(7);
                             }
                         }
-
-                        // sustain sudah pernah dipakai
                         else
                         {
-                            // DAMAGE BESAR MENEMBUS FIELD
-                            if (damage >= 2)
-                            {
-                                target->reflectionField = false;
-                                target->reflectionSustain = false;
+                            target->reflectionField = false;
+                            target->reflectionSustain = false;
 
-                                setColor(4);
+                            setColor(4);
 
-                                cout << "\nREFLECTION FIELD HANCUR!\n";
-                                cout << "DAMAGE TERLALU BESAR!\n";
+                            cout << "\nREFLECTION FIELD HANCUR!\n";
 
-                                setColor(7);
-
-                                // target tetap kena 1 damage
-                                if (target->nanoShield)
-                                {
-                                    target->nanoShield = false;
-
-                                    setColor(11);
-
-                                    cout << "\nNANOSHIELD MENAHAN 1 DAMAGE!\n";
-
-                                    setColor(7);
-
-                                    // kurangi damage sebesar 1
-                                    damage -= 1;
-
-                                    // damage habis total
-                                    if (damage <= 0)
-                                    {
-                                        cout << target->name
-                                            << " TIDAK MENERIMA DAMAGE!\n";
-
-                                        return true;
-                                    }
-
-                                    cout << "SISA DAMAGE : "
-                                        << damage << endl;
-                                }
-                                else
-                                {
-                                    target->hp -= 1;
-
-                                    target->kenaDamage = true;
-
-                                    cout << target->name
-                                        << " TERKENA 1 DAMAGE!\n";
-
-                                    // cek mati
-                                    if (target->hp <= 0)
-                                    {
-                                        target->alive = false;
-
-                                        cout << target->name
-                                            << " MATI!\n";
-                                    }
-                                }
-                            }
-
-                            // DAMAGE NORMAL
-                            else
-                            {
-                                target->reflectionField = false;
-                                target->reflectionSustain = false;
-
-                                setColor(4);
-
-                                cout << "\nREFLECTION FIELD HANCUR!\n";
-
-                                setColor(7);
-                            }
+                            setColor(7);
                         }
-
-                        // mati
 
                         if (shooter->hp <= 0)
                         {
@@ -1247,6 +1252,11 @@ bool shoot(Player *shooter, Player *target, BulletStack &stack, bool &doubleDama
 
         cout << "\nklik...\n";
         cout << "BLANK SHELL\n";
+        
+        if (target == shooter)
+        {
+            shooter->blankTurn = true;
+        }
 
         // ========================================
         // CHAOS BLANK EFFECT
@@ -1353,6 +1363,7 @@ bool shoot(Player *shooter, Player *target, BulletStack &stack, bool &doubleDama
                 }
             }
         }
+
         setColor(7);
         return false;
     }
